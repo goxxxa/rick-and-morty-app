@@ -4,9 +4,13 @@
 *.log
 *.pyc
 *.swp
+*.g.dart
+*.freezed.dart
 .buildlog/
 .history
 
+/.idea
+/.vscode
 
 
 # Flutter repo-specific

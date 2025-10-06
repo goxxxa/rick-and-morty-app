@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:rick_and_morty_app/database/database.dart';
-import 'package:rick_and_morty_app/rick_and_morty_app.dart';
+import 'package:rick_and_morty_app/bootstrap.dart';
 
-void main() {
-  final locator = GetIt.instance;
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final database = AppDatabase();
-  locator.registerSingleton(database);
-  runApp(const RickAndMortyApp());
+  await bootstrap();
 }

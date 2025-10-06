@@ -87,8 +87,8 @@ class CharacterModel extends Equatable {
   final String species;
   final String type;
   final String gender;
-  final Origin origin;
-  final Location location;
+  final Origin? origin;
+  final Location? location;
   final String image;
   final String url;
   final List<String> episode;

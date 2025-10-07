@@ -32,6 +32,7 @@ class Characters extends Table {
   TextColumn get image => text()();
   BlobColumn get episode => blob()();
   TextColumn get created => text()();
+  BoolColumn get isFavorite => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column<Object>>? get primaryKey => {id};
@@ -49,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
@@ -57,6 +58,20 @@ class AppDatabase extends _$AppDatabase {
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
       ),
+    );
+  }
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+      },
+      onUpgrade: (m, from, to) async {
+        if (from < 2) {
+          await m.addColumn(characters, characters.isFavorite);
+        }
+      },
     );
   }
 }

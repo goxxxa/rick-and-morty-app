@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty_app/features/characters/bloc/characters_bloc.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
-import 'package:rick_and_morty_app/repositories/models.dart';
+import 'package:rick_and_morty_app/features/characters/characters.dart';
 
 /// {@template list_title}
 /// ListTitle widget.
@@ -49,18 +48,37 @@ class MyListTitle extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   data[index].name,
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                Text('${data[index].status} - ${data[index].species}'),
+                Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: data[index].status == 'Alive'
+                            ? Colors.green
+                            : Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '${data[index].status} - ${data[index].species}',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 Text('Last known location:'),
                 Text(data[index].location!.name),
                 Stack(

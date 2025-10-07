@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 
-abstract interface class AbstractCharacterRepository {
+abstract interface class AbstractCharacterRepo {
   Future<http.Response> getAllCharacters();
   Future<http.Response> getSingleCharacter(int characterId);
   Future<http.Response> getMultipleCharacters(List<int> ids);
@@ -17,7 +17,7 @@ abstract interface class AbstractCharacterRepository {
   Future<http.Response> getFilteredEpisodes();
 }
 
-class CharacterRepository implements AbstractCharacterRepository {
+class CharacterRepo implements AbstractCharacterRepo {
   final String mainUrl = 'https://rickandmortyapi.com/api/character/';
   final http.Client _client = http.Client();
 

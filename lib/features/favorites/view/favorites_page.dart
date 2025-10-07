@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_state.dart';
 import 'package:rick_and_morty_app/features/favorites/widgets/favorites_list_title.dart';
+import 'package:rick_and_morty_app/features/favorites/widgets/sorting_menu.dart';
 
 /// {@template favorites_screen}
 /// FavoritesScreen widget.
@@ -50,13 +51,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text('Favorites'),
-            IconButton(onPressed: () {}, icon: Icon(Icons.filter_list)),
-          ],
-        ),
+        actions: [const SortingMenu()],
+        title: const Text('Favorites'),
       ),
       body: Center(
         child: Padding(

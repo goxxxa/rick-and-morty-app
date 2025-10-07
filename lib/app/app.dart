@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_and_morty_app/features/characters/bloc/characters_bloc.dart';
-import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
-import 'package:rick_and_morty_app/features/characters/view/characters_page.dart';
-import 'package:rick_and_morty_app/features/favorites/view/favorites_page.dart';
 import 'package:rick_and_morty_app/app/navigation_bloc.dart';
+import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
+import 'package:rick_and_morty_app/features/characters/characters.dart';
+import 'package:rick_and_morty_app/features/favorites/bloc/favorites_event.dart';
+import 'package:rick_and_morty_app/features/favorites/favorites.dart';
 
 class RickAndMortyApp extends StatelessWidget {
   const RickAndMortyApp({super.key});
@@ -32,24 +32,40 @@ class MainNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CharacterBLoC()..add(ChractersGetData()),
-      child: Scaffold(
-        body: IndexedStack(
-          index: context.watch<NavigationCubit>().state.index,
-          children: const [CharactersPage(), FavoritesPage()],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => CharacterBLoC()..add(ChractersGetData())),
+        BlocProvider(
+          create: (_) => FavoritesBLoC()..add(GetFavoritesCharacters()),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: context.watch<NavigationCubit>().state.index,
-          onTap: (index) =>
-              context.read<NavigationCubit>().updateTab(AppTab.values[index]),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
-          ],
+      ],
+      child: BlocListener<NavigationCubit, AppTab>(
+        listener: (context, tab) {
+          if (tab == AppTab.favorites) {
+            context.read<FavoritesBLoC>().add(GetFavoritesCharacters());
+          }
+        },
+        child: Scaffold(
+          body: IndexedStack(
+            index: context.watch<NavigationCubit>().state.index,
+            children: const [CharactersPage(), FavoritesPage()],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: context.watch<NavigationCubit>().state.index,
+            onTap: (index) {
+              context.read<NavigationCubit>().updateTab(AppTab.values[index]);
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'Search',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Favorites',
+              ),
+            ],
+          ),
         ),
       ),
     );

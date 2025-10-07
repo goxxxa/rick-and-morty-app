@@ -8,6 +8,8 @@ sealed class CharacterPageState with _$CharacterPageState {
   const CharacterPageState._();
   const factory CharacterPageState.processing() = ProcessingState;
   const factory CharacterPageState.idle() = IdleState;
-  const factory CharacterPageState.loaded(List<CharacterModel> characters) =
-      LoadedState;
+  const factory CharacterPageState.loaded(
+    List<CharacterModel> characters,
+    List<int> favoritesIds,
+  ) = LoadedState;
 }

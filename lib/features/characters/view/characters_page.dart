@@ -27,50 +27,9 @@ class _CharactersPageState extends State<CharactersPage> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    _scrollController?.addListener(() {
-      if (_scrollController?.position.userScrollDirection ==
-              ScrollDirection.reverse ||
-          _scrollController?.position.pixels ==
-              _scrollController?.position.minScrollExtent) {
-        setState(() {
-          show = false;
-        });
-      } else {
-        setState(() {
-          show = true;
-        });
-      }
-      if (_scrollController?.position.pixels ==
-          _scrollController?.position.maxScrollExtent) {
-        count += 10;
-        final ids = List<int>.generate(
-          10,
-          (int index) => (count - 10 + index + 1),
-        );
-        context.read<CharacterBLoC>().add(ChractersGetData(ids: ids));
-      }
-    });
+    _scrollController?.addListener(_scrollControllerListener);
     super.initState();
     // Initial state initialization
-  }
-
-  @override
-  void didUpdateWidget(covariant CharactersPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Widget configuration changed
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // The configuration of InheritedWidgets has changed
-    // Also called after initState but before build
-  }
-
-  @override
-  void dispose() {
-    _scrollController?.dispose();
-    super.dispose();
   }
 
   @override
@@ -103,7 +62,7 @@ class _CharactersPageState extends State<CharactersPage> {
               processing: () =>
                   const Center(child: CircularProgressIndicator()),
               idle: () => const Center(child: CircularProgressIndicator()),
-              loaded: (characters) {
+              loaded: (characters, ids) {
                 return CustomScrollView(
                   controller: _scrollController,
                   slivers: [
@@ -136,10 +95,12 @@ class _CharactersPageState extends State<CharactersPage> {
                         separatorBuilder: (context, index) =>
                             const SizedBox(height: 10),
                         itemBuilder: (context, index) {
+                          var show = (ids.contains(characters[index].id));
                           return MyListTitle(
                             index: index,
                             data: characters,
                             bloc: context.read<CharacterBLoC>(),
+                            show: show,
                           );
                         },
                       ),
@@ -152,5 +113,32 @@ class _CharactersPageState extends State<CharactersPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController?.dispose();
+    super.dispose();
+  }
+
+  void _scrollControllerListener() {
+    if (_scrollController?.position.userScrollDirection ==
+            ScrollDirection.reverse ||
+        _scrollController?.position.pixels ==
+            _scrollController?.position.minScrollExtent) {
+      setState(() {
+        show = false;
+      });
+    } else {
+      setState(() {
+        show = true;
+      });
+    }
+    if (_scrollController?.position.pixels ==
+        _scrollController?.position.maxScrollExtent) {
+      count += 10;
+      final ids = List<int>.generate(count, (int index) => (index + 1));
+      context.read<CharacterBLoC>().add(ChractersGetData(ids: ids));
+    }
   }
 }

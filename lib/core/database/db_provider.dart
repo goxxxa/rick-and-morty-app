@@ -16,6 +16,7 @@ abstract interface class DatabaseProvider {
   Future<void> deleteDatabaseFile();
 
   Future<void> addCharacters(List<CharacterModel> characters);
+  Future<List<int>> getFavoritesIds();
 
   Future<void> addCharacterToFavorites(int characterId);
   Future<void> deleteCharacterFromFavorites(int characterId);
@@ -112,5 +113,13 @@ class DatabaseProviderImpl implements DatabaseProvider {
   @override
   Future<List<Character>> getAllCharacters() async {
     return await (db.select(db.characters)).get();
+  }
+
+  @override
+  Future<List<int>> getFavoritesIds() async {
+    var result = (await (db.select(
+      db.favorites,
+    )).get()).map((el) => el.id).toList();
+    return result;
   }
 }

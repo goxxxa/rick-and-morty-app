@@ -11,13 +11,15 @@ class MyListTitle extends StatelessWidget {
   final int index;
   final List<CharacterModel> data;
   final CharacterBLoC bloc;
+  final bool show;
 
   /// {@macro list_title}
   const MyListTitle({
     super.key,
     required this.index,
     required this.data,
-    required this.bloc, // ignore: unused_element
+    required this.bloc,
+    required this.show, // ignore: unused_element
   });
 
   @override
@@ -88,10 +90,12 @@ class MyListTitle extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 16, top: 8),
               child: IconButton(
-                onPressed: () {
+                onPressed: () async {
                   bloc.add(AddCharacterToFavorites(id: data[index].id));
                 },
-                icon: Icon(Icons.star),
+                icon: show
+                    ? Icon(Icons.star)
+                    : Icon(Icons.star_border_outlined),
               ),
             ),
           ),

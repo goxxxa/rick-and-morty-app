@@ -13,13 +13,14 @@ import 'package:talker/talker.dart';
 
 Future<void> bootstrap() async {
   runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
     final locator = GetIt.instance;
     final talker = Talker();
 
     final database = AppDatabase();
     final databaseProvider = DatabaseProviderImpl(db: database);
 
-    Bloc.observer = MyBLoCObserver();
+    Bloc.observer = AppObserver();
     Bloc.transformer = sequential();
 
     locator.registerSingleton(database);

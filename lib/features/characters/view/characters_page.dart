@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_app/core/theme/cubit/theme_cubit.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_bloc.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_state.dart';
@@ -78,7 +79,9 @@ class _CharactersPageState extends State<CharactersPage> {
                             style: TextStyle(color: Colors.black),
                           ),
                           IconButton(
-                            onPressed: null,
+                            onPressed: () {
+                              context.read<ThemeCubit>().toggleTheme();
+                            },
                             icon: const Icon(Icons.sunny, color: Colors.black),
                           ),
                         ],
@@ -129,13 +132,18 @@ class _CharactersPageState extends State<CharactersPage> {
       setState(() {
         show = false;
       });
+    } else if (_scrollController?.position.userScrollDirection ==
+        ScrollDirection.idle) {
+      setState(() {
+        show = true;
+      });
     } else {
       setState(() {
         show = true;
       });
     }
-    if (_scrollController?.position.pixels ==
-        _scrollController?.position.maxScrollExtent) {
+    if (_scrollController!.position.pixels >=
+        (_scrollController!.position.maxScrollExtent - 100.0)) {
       count += 10;
       final ids = List<int>.generate(count, (int index) => (index + 1));
       context.read<CharacterBLoC>().add(ChractersGetData(ids: ids));

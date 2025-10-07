@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rick_and_morty_app/core/database/db_provider.dart';
-import 'package:rick_and_morty_app/repositories/models.dart';
+import 'package:rick_and_morty_app/features/characters/characters.dart';
 
 class CacheCharacterModel extends Equatable {
   final int id;

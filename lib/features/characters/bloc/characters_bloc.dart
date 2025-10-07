@@ -5,13 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:rick_and_morty_app/core/database/db_provider.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_state.dart';
-import 'package:rick_and_morty_app/repositories/character_repository.dart';
-import 'package:rick_and_morty_app/repositories/models.dart';
+import 'package:rick_and_morty_app/features/characters/characters.dart';
+import 'package:rick_and_morty_app/repositories/character_repo.dart';
 
 class CharacterBLoC extends Bloc<CharactersListEvent, CharacterPageState> {
   CharacterBLoC() : super(CharacterPageState.idle()) {
     on<ChractersGetData>((event, emit) async {
-      final repo = CharacterRepository();
+      final repo = CharacterRepo();
       var response = await repo.getMultipleCharacters(event.ids);
 
       if (response.statusCode == 200) {

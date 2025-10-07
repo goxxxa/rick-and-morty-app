@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_and_morty_app/app/navigation_bloc.dart';
+import 'package:rick_and_morty_app/app/cubit/navigation_cubit.dart';
+import 'package:rick_and_morty_app/core/theme/cubit/theme_cubit.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
 import 'package:rick_and_morty_app/features/characters/characters.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_event.dart';
@@ -11,17 +12,20 @@ class RickAndMortyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NavigationCubit(),
-      child: MaterialApp(
-        title: 'The Rick and Morty App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 39, 43, 51),
-          ),
-        ),
-        home: const MainNavigation(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => NavigationCubit()),
+        BlocProvider(create: (_) => ThemeCubit()),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'The Rick and Morty App',
+            debugShowCheckedModeBanner: false,
+            theme: state.theme,
+            home: const MainNavigation(),
+          );
+        },
       ),
     );
   }

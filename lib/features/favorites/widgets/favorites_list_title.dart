@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:rick_and_morty_app/core/database/database.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_bloc.dart';
@@ -11,14 +12,12 @@ import 'package:talker/talker.dart';
 class FavoritesListTitle extends StatelessWidget {
   final List<Character> data;
   final int index;
-  final FavoritesBLoC bloc;
 
   /// {@macro favorites_list_title}
   const FavoritesListTitle({
     super.key,
     required this.data,
     required this.index,
-    required this.bloc,
     // ignore: unused_element
   });
 
@@ -86,7 +85,9 @@ class FavoritesListTitle extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   GetIt.instance<Talker>().info('DELETE!');
-                  bloc.add(DeleteCharacterFromFavorites(id: data[index].id));
+                  context.read<FavoritesBLoC>().add(
+                    DeleteCharacterFromFavorites(id: data[index].id),
+                  );
                 },
                 icon: Icon(Icons.delete),
               ),

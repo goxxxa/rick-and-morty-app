@@ -17,7 +17,9 @@ class CharacterBLoC extends Bloc<CharactersListEvent, CharacterPageState> {
       if (response.statusCode == 200) {
         var data = CharacterModel.listFromJson(jsonDecode(response.body));
         await GetIt.instance<DatabaseProviderImpl>().addCharacters(data);
-        emit(CharacterPageState.loaded(data));
+        var ids = await GetIt.instance<DatabaseProviderImpl>()
+            .getFavoritesIds();
+        emit(CharacterPageState.loaded(data, ids));
       }
     });
     on<AddCharacterToFavorites>((event, emit) async {

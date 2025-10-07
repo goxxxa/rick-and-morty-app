@@ -60,7 +60,12 @@ dev_dependencies:
   drift_dev: ^2.28.3
   build_runner: ^2.9.0
   freezed: ^3.2.3
+  flutter_launcher_icons: ^0.14.4
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo.jpg"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

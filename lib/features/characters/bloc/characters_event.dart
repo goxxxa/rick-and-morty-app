@@ -1,14 +1,19 @@
-abstract class CharactersListEvent {}
+import 'package:rick_and_morty_app/repositories/characters/model/character.dart';
 
-class ChractersGetData extends CharactersListEvent {
-  final List<int> ids;
+abstract class CharactersEvent {}
 
-  ChractersGetData({List<int>? ids})
-    : ids = ids ?? List<int>.generate(10, (index) => index + 1);
+class LoadInitialCharacters extends CharactersEvent {}
+
+class LoadMoreCharacters extends CharactersEvent {
+  final int count;
+
+  LoadMoreCharacters({required this.count});
 }
 
-class AddCharacterToFavorites extends CharactersListEvent {
-  final int id;
+class AddCharacterToFavorites extends CharactersEvent {
+  final Character character;
 
-  AddCharacterToFavorites({required this.id});
+  AddCharacterToFavorites({required this.character});
 }
+
+class RefreshCharactersData extends CharactersEvent {}

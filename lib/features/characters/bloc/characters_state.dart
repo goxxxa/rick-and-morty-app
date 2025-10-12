@@ -1,15 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rick_and_morty_app/features/characters/characters.dart';
+import 'package:rick_and_morty_app/repositories/characters/model/character.dart';
 
 part 'characters_state.freezed.dart';
 
-@Freezed()
-sealed class CharacterPageState with _$CharacterPageState {
-  const CharacterPageState._();
-  const factory CharacterPageState.processing() = ProcessingState;
-  const factory CharacterPageState.idle() = IdleState;
-  const factory CharacterPageState.loaded(
-    List<CharacterModel> characters,
-    List<int> favoritesIds,
-  ) = LoadedState;
+@freezed
+class CharactersState with _$CharactersState {
+  const factory CharactersState.idle() = IdleState;
+  const factory CharactersState.processing() = ProcessingState;
+  const factory CharactersState.loaded(List<Character> characters) =
+      LoadedState;
+  const factory CharactersState.empty() = EmptyState;
+  const factory CharactersState.error() = ErrorState;
 }

@@ -12,7 +12,6 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
       super(const CharactersState.idle()) {
     on<LoadInitialCharacters>(_onInitialLoad);
     on<LoadMoreCharacters>(_onLoadMore);
-    on<RefreshCharactersData>(_onRefresh);
     on<AddCharacterToFavorites>(_onToggleFavorite);
   }
 
@@ -34,15 +33,6 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   ) async {
     final start = event.count;
     await _repository.loadMore(start - 10, 10);
-  }
-
-  Future<void> _onRefresh(
-    RefreshCharactersData event,
-    Emitter<CharactersState> emit,
-  ) async {
-    emit(const CharactersState.processing());
-    Future.delayed(Duration(seconds: 1));
-    await _subscribeToStream(emit);
   }
 
   Future<void> _onToggleFavorite(

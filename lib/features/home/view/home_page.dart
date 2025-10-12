@@ -36,15 +36,12 @@ class _HomeViewState extends State<HomeView> {
           final tab = HomeTab.values[index];
           context.read<HomeCubit>().setTab(tab);
         },
-        selectedItemColor: Theme.of(context).colorScheme.secondary,
-        unselectedItemColor: Theme.of(context).iconTheme.color,
+        selectedItemColor: Theme.of(context).colorScheme.onSurface,
+        unselectedItemColor: Theme.of(context).dividerColor,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         showUnselectedLabels: true,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_rounded),
-            label: 'Characters',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Characters'),
           BottomNavigationBarItem(
             icon: Icon(Icons.show_chart_rounded),
             label: 'Favorites',

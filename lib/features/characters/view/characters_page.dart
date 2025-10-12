@@ -88,30 +88,21 @@ class _CharactersViewState extends State<CharactersView> {
                     const Center(child: CircularProgressIndicator()),
                 idle: () => const Center(child: CircularProgressIndicator()),
                 loaded: (characters) {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<CharactersBloc>().add(
-                        RefreshCharactersData(),
-                      );
-                    },
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: characters.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
-                      itemBuilder: (context, index) => RepaintBoundary(
-                        child: CharacterListCard(
-                          key: ValueKey(characters[index].id),
-                          character: characters[index],
-                          icon: characters[index].isFavorite
-                              ? Icon(Icons.star, color: Colors.yellow)
-                              : Icon(Icons.star_border),
-                          onPressed: () => context.read<CharactersBloc>().add(
-                            AddCharacterToFavorites(
-                              character: characters[index],
-                            ),
-                          ),
+                  return ListView.separated(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: characters.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 10),
+                    itemBuilder: (context, index) => RepaintBoundary(
+                      child: CharacterListCard(
+                        key: ValueKey(characters[index].id),
+                        character: characters[index],
+                        icon: characters[index].isFavorite
+                            ? Icon(Icons.star, color: Colors.yellow)
+                            : Icon(Icons.star_border),
+                        onPressed: () => context.read<CharactersBloc>().add(
+                          AddCharacterToFavorites(character: characters[index]),
                         ),
                       ),
                     ),

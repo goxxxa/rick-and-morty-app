@@ -3,14 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_event.dart';
 
-/// {@template sorting_menu}
-/// SortingMenu widget.
-/// {@endtemplate}
 class SortingMenu extends StatelessWidget {
-  /// {@macro sorting_menu}
-  const SortingMenu({
-    super.key, // ignore: unused_element
-  });
+  const SortingMenu({super.key});
 
   @override
   Widget build(BuildContext context) {

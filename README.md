@@ -104,6 +104,36 @@ make codegen
 ```
 flutter run
 ```
+### Основные зависимости
+
+| Пакет                   | Версия     | Описание                        |
+|--------------------------|-----------|---------------------------------|
+| cupertino_icons          | ^1.0.8    | Иконки для iOS                  |
+| equatable                | ^2.0.7    | Сравнение объектов по значению  |
+| http                     | ^1.5.0    | HTTP-запросы                    |
+| drift                    | ^2.28.2   | ORM для SQLite                  |
+| drift_flutter            | ^0.2.7    | Поддержка Drift для Flutter     |
+| path_provider            | ^2.1.5    | Работа с файловой системой      |
+| get_it                   | ^8.2.0    | DI контейнер                     |
+| freezed_annotation       | ^3.1.0    | Генерация immutable классов     |
+| flutter_bloc             | ^9.1.1    | State management                |
+| hydrated_bloc            | ^10.1.1   | Сохранение состояния BLoC       |
+| cached_network_image     | ^3.4.1    | Кэширование изображений         |
+| rxdart                   | ^0.28.0   | Расширения для Stream           |
+| json_annotation          | ^4.9.0    | JSON сериализация               |
+| shimmer                  | ^3.0.0    | Эффекты загрузки                |
+
+### Dev dependencies
+
+| Пакет                   | Версия     | Описание                        |
+|--------------------------|-----------|---------------------------------|
+| flutter_test             | sdk       | Тестирование Flutter            |
+| flutter_lints            | ^5.0.0    | Рекомендуемые правила линтинга |
+| drift_dev                | ^2.28.3   | Генерация кода Drift            |
+| build_runner             | ^2.9.0    | Генерация кода                  |
+| freezed                  | ^3.2.3    | Генерация immutable классов     |
+| json_serializable        | ^6.11.1   | Генерация JSON сериализации     |
+| flutter_launcher_icons   | ^0.14.4   | Настройка иконок приложения     |
 
 ## Структура проекта
 

@@ -4,22 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 part 'database.g.dart';
 
-class Locations extends Table {
-  IntColumn get id => integer()();
-  TextColumn get url => text()();
-
-  @override
-  Set<Column<Object>>? get primaryKey => {id};
-}
-
-class Origins extends Table {
-  IntColumn get id => integer()();
-  TextColumn get url => text()();
-
-  @override
-  Set<Column<Object>>? get primaryKey => {id};
-}
-
+@DataClassName('CharacterEntity')
 class Characters extends Table {
   IntColumn get id => integer()();
   TextColumn get name => text()();
@@ -27,8 +12,11 @@ class Characters extends Table {
   TextColumn get species => text()();
   TextColumn get type => text()();
   TextColumn get gender => text()();
-  // IntColumn get origin => integer().references(Origins, #id)();
-  // IntColumn get location => integer().references(Locations, #id)();
+  TextColumn get originName => text()();
+  TextColumn get originUrl => text()();
+  TextColumn get locationName => text()();
+  TextColumn get locationUrl => text()();
+  TextColumn get url => text()();
   TextColumn get image => text()();
   BlobColumn get episode => blob()();
   TextColumn get created => text()();
@@ -38,40 +26,19 @@ class Characters extends Table {
   Set<Column<Object>>? get primaryKey => {id};
 }
 
-class Favorites extends Table {
-  IntColumn get id => integer()();
-
-  @override
-  Set<Column<Object>>? get primaryKey => {id};
-}
-
-@DriftDatabase(tables: [Characters, Favorites])
+@DriftDatabase(tables: [Characters])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
-      name: 'my_database',
+      name: 'app_database',
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationSupportDirectory,
       ),
-    );
-  }
-
-  @override
-  MigrationStrategy get migration {
-    return MigrationStrategy(
-      onCreate: (m) async {
-        await m.createAll();
-      },
-      onUpgrade: (m, from, to) async {
-        if (from < 2) {
-          await m.addColumn(characters, characters.isFavorite);
-        }
-      },
     );
   }
 }

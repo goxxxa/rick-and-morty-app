@@ -1,118 +1,131 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_and_morty_app/core/theme/cubit/theme_cubit.dart';
-import 'package:rick_and_morty_app/features/characters/bloc/characters_bloc.dart';
+import 'package:rick_and_morty_app/features/characters/characters.dart';
+import 'package:rick_and_morty_app/repositories/characters/characters_repository.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_event.dart';
 import 'package:rick_and_morty_app/features/characters/bloc/characters_state.dart';
-import 'package:rick_and_morty_app/features/characters/widgets/list_title.dart';
+import 'package:rick_and_morty_app/ui/theme/cubit/theme_cubit.dart';
+import 'package:rick_and_morty_app/ui/widgets/widgets.dart';
 
-/// {@template characters_screen}
-/// CharactersScreen widget.
-/// {@endtemplate}
-class CharactersPage extends StatefulWidget {
-  /// {@macro characters_screen}
+class CharactersPage extends StatelessWidget {
   const CharactersPage({super.key});
 
   @override
-  State<CharactersPage> createState() => _CharactersPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          CharactersBloc(repository: context.read<CharactersRepository>())
+            ..add(LoadInitialCharacters()),
+      child: CharactersView(),
+    );
+  }
 }
 
-/// State for widget CharactersScreen.
-class _CharactersPageState extends State<CharactersPage> {
-  ScrollController? _scrollController;
-  int count = 20;
+class CharactersView extends StatefulWidget {
+  const CharactersView({super.key});
 
-  bool show = false;
+  @override
+  State<CharactersView> createState() => _CharactersViewState();
+}
+
+class _CharactersViewState extends State<CharactersView> {
+  late final ScrollController _scrollController;
+  final _showScrollUp = ValueNotifier<bool>(false);
+  int count = 20;
 
   @override
   void initState() {
     _scrollController = ScrollController();
-    _scrollController?.addListener(_scrollControllerListener);
+    _scrollController.addListener(_onScroll);
     super.initState();
-    // Initial state initialization
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      floatingActionButton: AnimatedSlide(
-        offset: show ? Offset.zero : Offset(0, 2),
-        duration: const Duration(milliseconds: 300),
-        child: AnimatedOpacity(
-          opacity: show ? 1 : 0,
-          duration: const Duration(milliseconds: 300),
-          child: FloatingActionButton(
-            onPressed: () {
-              _scrollController?.animateTo(
-                0,
-                duration: const Duration(seconds: 2),
-                curve: Curves.linearToEaseOut,
-              );
-            },
-            child: const Icon(Icons.arrow_upward),
-          ),
+      floatingActionButton: ValueListenableBuilder(
+        valueListenable: _showScrollUp,
+        builder: (context, show, child) {
+          return AnimatedSlide(
+            offset: show ? Offset.zero : Offset(0, 2),
+            duration: const Duration(milliseconds: 300),
+            child: AnimatedOpacity(
+              opacity: show ? 1 : 0,
+              duration: const Duration(milliseconds: 300),
+              child: FloatingActionButton(
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0,
+                    duration: const Duration(seconds: 2),
+                    curve: Curves.linearToEaseOut,
+                  );
+                },
+                child: const Icon(Icons.arrow_upward),
+              ),
+            ),
+          );
+        },
+      ),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Rick and Morty App'),
+            IconButton(
+              onPressed: context.read<ThemeCubit>().toggleTheme,
+              icon: Icon(Icons.sunny),
+            ),
+          ],
         ),
       ),
-      body: SafeArea(
-        child: BlocBuilder<CharacterBLoC, CharacterPageState>(
-          bloc: context.read<CharacterBLoC>(),
-          builder: (context, state) {
-            return state.when(
-              processing: () =>
-                  const Center(child: CircularProgressIndicator()),
-              idle: () => const Center(child: CircularProgressIndicator()),
-              loaded: (characters, ids) {
-                return CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    SliverAppBar(
-                      floating: true,
-                      snap: true,
-                      backgroundColor: Colors.white,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'The Rick and Morty App',
-                            style: TextStyle(color: Colors.black),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
+          child: BlocBuilder<CharactersBloc, CharactersState>(
+            builder: (context, state) {
+              return state.when(
+                processing: () =>
+                    const Center(child: CircularProgressIndicator()),
+                idle: () => const Center(child: CircularProgressIndicator()),
+                loaded: (characters) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<CharactersBloc>().add(
+                        RefreshCharactersData(),
+                      );
+                    },
+                    child: ListView.separated(
+                      controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: characters.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                      itemBuilder: (context, index) => RepaintBoundary(
+                        child: CharacterListCard(
+                          key: ValueKey(characters[index].id),
+                          character: characters[index],
+                          icon: characters[index].isFavorite
+                              ? Icon(Icons.star, color: Colors.yellow)
+                              : Icon(Icons.star_border),
+                          onPressed: () => context.read<CharactersBloc>().add(
+                            AddCharacterToFavorites(
+                              character: characters[index],
+                            ),
                           ),
-                          IconButton(
-                            onPressed: () {
-                              context.read<ThemeCubit>().toggleTheme();
-                            },
-                            icon: const Icon(Icons.sunny, color: Colors.black),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      sliver: SliverList.separated(
-                        itemCount: characters.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 10),
-                        itemBuilder: (context, index) {
-                          var show = (ids.contains(characters[index].id));
-                          return MyListTitle(
-                            index: index,
-                            data: characters,
-                            bloc: context.read<CharacterBLoC>(),
-                            show: show,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
+                  );
+                },
+                error: () => Center(
+                  child: Text(
+                    'Упссс...\n Что-то пошло не так. Попробуйте обновить приложение.',
+                  ),
+                ),
+                empty: () => const Center(child: Text('Тут пока пусто!')),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -120,33 +133,22 @@ class _CharactersPageState extends State<CharactersPage> {
 
   @override
   void dispose() {
-    _scrollController?.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _showScrollUp.dispose();
     super.dispose();
   }
 
-  void _scrollControllerListener() {
-    if (_scrollController?.position.userScrollDirection ==
-            ScrollDirection.reverse ||
-        _scrollController?.position.pixels ==
-            _scrollController?.position.minScrollExtent) {
+  void _onScroll() {
+    _showScrollUp.value =
+        _scrollController.position.pixels >
+        (_scrollController.position.maxScrollExtent / 10);
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       setState(() {
-        show = false;
+        count += 10;
       });
-    } else if (_scrollController?.position.userScrollDirection ==
-        ScrollDirection.idle) {
-      setState(() {
-        show = true;
-      });
-    } else {
-      setState(() {
-        show = true;
-      });
-    }
-    if (_scrollController!.position.pixels >=
-        (_scrollController!.position.maxScrollExtent - 100.0)) {
-      count += 10;
-      final ids = List<int>.generate(count, (int index) => (index + 1));
-      context.read<CharacterBLoC>().add(ChractersGetData(ids: ids));
+      context.read<CharactersBloc>().add(LoadMoreCharacters(count: count));
     }
   }
 }

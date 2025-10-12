@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_bloc.dart';
 import 'package:rick_and_morty_app/features/favorites/bloc/favorites_event.dart';
@@ -16,7 +15,7 @@ class FavoritesPage extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           FavoritesBLoC(repository: context.read<CharactersRepository>())
-            ..add(Request()),
+            ..add(FavoritesSubscriptionRequested()),
       child: const FavoritesView(),
     );
   }
@@ -32,7 +31,6 @@ class FavoritesView extends StatefulWidget {
 class _FavoritesViewState extends State<FavoritesView> {
   late final ScrollController _scrollController;
   final _showScrollUp = ValueNotifier<bool>(false);
-  final int _pageSize = 20;
 
   @override
   void initState() {
@@ -89,9 +87,7 @@ class _FavoritesViewState extends State<FavoritesView> {
                       return CharacterListCard(
                         character: characters[index],
                         onPressed: () => context.read<FavoritesBLoC>().add(
-                          DeleteCharacterFromFavorites(
-                            id: characters[index].id,
-                          ),
+                          FavoriteDeleted(id: characters[index].id),
                         ),
                         icon: Icon(Icons.delete),
                       );
@@ -109,7 +105,7 @@ class _FavoritesViewState extends State<FavoritesView> {
                       fontWeight: FontWeight.w600,
                       color: Theme.of(
                         context,
-                      ).colorScheme.onSurface.withOpacity(0.7),
+                      ).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),

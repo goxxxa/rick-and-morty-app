@@ -9,10 +9,9 @@ class SortingMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<SortingTypes>(
-      initialValue: SortingTypes.byNameAsc,
       icon: const Icon(Icons.sort),
       onSelected: (option) {
-        context.read<FavoritesBLoC>().add(SortFavorites(type: option));
+        context.read<FavoritesBLoC>().add(FavoritesSorted(type: option));
       },
       itemBuilder: (context) => [
         const PopupMenuItem(

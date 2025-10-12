@@ -86,16 +86,17 @@ class CharacterListCard extends StatelessWidget {
                         '${character.status} - ${character.species}',
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
-                          color: theme.colorScheme.onSurface.withOpacity(0.8),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.8,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  // const SizedBox(height: 12),
                   Text(
                     'Last known location:',
                     style: textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

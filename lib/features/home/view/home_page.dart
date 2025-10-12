@@ -43,7 +43,7 @@ class _HomeViewState extends State<HomeView> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Characters'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart_rounded),
+            icon: Icon(Icons.star_border),
             label: 'Favorites',
           ),
         ],

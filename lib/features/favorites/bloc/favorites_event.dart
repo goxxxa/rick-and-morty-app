@@ -1,46 +1,31 @@
 import 'package:equatable/equatable.dart';
-import 'package:rick_and_morty_app/repositories/characters/model/character.dart';
 import 'package:rick_and_morty_app/features/favorites/favorites.dart';
 
-abstract class FavoritesEvent extends Equatable {}
-
-class LoadFavoritesCharacters extends FavoritesEvent {
-  LoadFavoritesCharacters();
+abstract class FavoritesEvent extends Equatable {
+  const FavoritesEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class Request extends FavoritesEvent {
-  Request();
-
-  @override
-  List<Object?> get props => [];
+class FavoritesSubscriptionRequested extends FavoritesEvent {
+  const FavoritesSubscriptionRequested();
 }
 
-class DeleteCharacterFromFavorites extends FavoritesEvent {
+class FavoriteDeleted extends FavoritesEvent {
   final int id;
 
-  DeleteCharacterFromFavorites({required this.id});
+  const FavoriteDeleted({required this.id});
 
   @override
   List<Object?> get props => [id];
 }
 
-class SortFavorites extends FavoritesEvent {
+class FavoritesSorted extends FavoritesEvent {
   final SortingTypes type;
 
-  SortFavorites({required this.type});
+  const FavoritesSorted({required this.type});
 
   @override
   List<Object?> get props => [type];
-}
-
-class UndoDeleteCharacter extends FavoritesEvent {
-  final Character character;
-
-  UndoDeleteCharacter({required this.character});
-
-  @override
-  List<Object?> get props => [character];
 }

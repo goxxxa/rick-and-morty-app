@@ -11,54 +11,62 @@ class FavoritesBLoC extends Bloc<FavoritesEvent, FavoritesPageState> {
   FavoritesBLoC({required CharactersRepository repository})
     : _repository = repository,
       super(FavoritesPageState.idle()) {
-    on<LoadFavoritesCharacters>(_onInitialLoad);
-    on<Request>(_onSubscriptionRequested);
-
-    on<DeleteCharacterFromFavorites>((event, emit) async {
-      _repository.unsetFavorite(event.id);
-    });
-    on<SortFavorites>((event, emit) async {
-      emit(FavoritesPageState.processing());
-
-      final characters = await _repository.charactersStream.first;
-      final favorites = characters.where((c) => c.isFavorite).toList();
-
-      if (favorites.isEmpty) {
-        emit(FavoritesPageState.empty());
-        return;
-      }
-
-      List<Character> sortedList = List.of(favorites);
-      switch (event.type) {
-        case SortingTypes.byNameAsc:
-          sortedList.sort((a, b) => a.name.compareTo(b.name));
-          break;
-        case SortingTypes.byNameDesc:
-          sortedList.sort((a, b) => b.name.compareTo(a.name));
-          break;
-        case SortingTypes.byStatusAsc:
-          sortedList.sort((a, b) => a.status.compareTo(b.status));
-          break;
-        case SortingTypes.byStatusDesc:
-          sortedList.sort((a, b) => b.status.compareTo(a.status));
-          break;
-        case SortingTypes.bySpeciesAsc:
-          sortedList.sort((a, b) => a.species.compareTo(b.species));
-          break;
-        case SortingTypes.bySpeciesDesc:
-          sortedList.sort((a, b) => b.species.compareTo(a.species));
-          break;
-      }
-
-      emit(FavoritesPageState.loaded(sortedList));
-    });
+    on<FavoritesSubscriptionRequested>(_onSubscriptionRequested);
+    on<FavoriteDeleted>(_onFavoriteDeleted);
+    on<FavoritesSorted>(_onFavoriteSorted);
   }
 
   final CharactersRepository _repository;
   StreamSubscription<List<Character>>? _subscription;
 
+  Future<void> _onFavoriteDeleted(
+    FavoriteDeleted event,
+    Emitter<FavoritesPageState> emit,
+  ) async {
+    _repository.unsetFavorite(event.id);
+  }
+
+  Future<void> _onFavoriteSorted(
+    FavoritesSorted event,
+    Emitter<FavoritesPageState> emit,
+  ) async {
+    emit(FavoritesPageState.processing());
+
+    final characters = await _repository.charactersStream.first;
+    final favorites = characters.where((c) => c.isFavorite).toList();
+
+    if (favorites.isEmpty) {
+      emit(FavoritesPageState.empty());
+      return;
+    }
+
+    List<Character> sortedList = List.of(favorites);
+    switch (event.type) {
+      case SortingTypes.byNameAsc:
+        sortedList.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case SortingTypes.byNameDesc:
+        sortedList.sort((a, b) => b.name.compareTo(a.name));
+        break;
+      case SortingTypes.byStatusAsc:
+        sortedList.sort((a, b) => a.status.compareTo(b.status));
+        break;
+      case SortingTypes.byStatusDesc:
+        sortedList.sort((a, b) => b.status.compareTo(a.status));
+        break;
+      case SortingTypes.bySpeciesAsc:
+        sortedList.sort((a, b) => a.species.compareTo(b.species));
+        break;
+      case SortingTypes.bySpeciesDesc:
+        sortedList.sort((a, b) => b.species.compareTo(a.species));
+        break;
+    }
+
+    emit(FavoritesPageState.loaded(sortedList));
+  }
+
   Future<void> _onSubscriptionRequested(
-    Request event,
+    FavoritesSubscriptionRequested event,
     Emitter<FavoritesPageState> emit,
   ) async {
     emit(FavoritesPageState.processing());
@@ -75,8 +83,9 @@ class FavoritesBLoC extends Bloc<FavoritesEvent, FavoritesPageState> {
     );
   }
 
-  Future<void> _onInitialLoad(
-    LoadFavoritesCharacters event,
-    Emitter<FavoritesPageState> emit,
-  ) async {}
+  @override
+  Future<void> close() async {
+    await _subscription?.cancel();
+    return super.close();
+  }
 }

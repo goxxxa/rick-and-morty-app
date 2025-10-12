@@ -15,5 +15,3 @@ class AddCharacterToFavorites extends CharactersEvent {
 
   AddCharacterToFavorites({required this.character});
 }
-
-class RefreshCharactersData extends CharactersEvent {}

@@ -23,7 +23,7 @@ fix: get
 
 
 build-apk:
-	@dart compile js -O3 -m --no-source-maps -o frontend/web/main.dart.js frontend/web/main.dart
+	@flutter build apk --release
 
 upgrade-packages:
 	@(flutter pub outdated && flutter pub upgrade --major-versions)
